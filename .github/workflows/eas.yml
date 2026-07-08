@@ -1,10 +1,16 @@
 name: eas
 
 on:
-  push:
-    branches: [develop]
   workflow_dispatch:
     inputs:
+      run_update:
+        description: "Publish preview update"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
       run_android_build:
         description: "Start Android preview build"
         required: true
@@ -16,6 +22,7 @@ on:
 
 jobs:
   update-preview:
+    if: inputs.run_update == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
