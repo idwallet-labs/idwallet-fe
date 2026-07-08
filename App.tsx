@@ -1,9 +1,16 @@
 import { StatusBar } from "expo-status-bar";
+import * as Sentry from "@sentry/react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 import { summarizeCredentials, WalletCredential, walletApi } from "./src/features/wallet";
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  enabled: Boolean(process.env.EXPO_PUBLIC_SENTRY_DSN),
+  tracesSampleRate: 0.1,
+});
 
 const fallbackCredentials: WalletCredential[] = [
   {
@@ -63,7 +70,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);
 
 const styles = StyleSheet.create({
   container: {

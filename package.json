@@ -4,6 +4,7 @@
   "packageManager": "pnpm@11.0.4",
   "main": "index.ts",
   "dependencies": {
+    "@sentry/react-native": "^8.17.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "expo": "~57.0.4",
     "expo-status-bar": "~57.0.0",
@@ -22,7 +23,6 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -2,6 +2,7 @@
   "expo": {
     "name": "idwallet-fe",
     "slug": "idwallet-fe",
+    "description": "Mobile identity wallet for selective credential submission and QR approval sessions.",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
