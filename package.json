@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
-    "babel-plugin-react-compiler": "^19.0.0-beta-af1b7da-20250417",
+    "babel-plugin-react-compiler": "^1.0.0",
     "expo": "~57.0.4",
     "expo-status-bar": "~57.0.0",
+    "expo-updates": "~57.0.6",
     "ky": "^2.0.2",
     "react": "19.2.3",
     "react-native": "0.86.0",

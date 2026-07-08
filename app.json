@@ -5,8 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "jsEngine": "jsc",
     "userInterfaceStyle": "light",
     "ios": {
+      "bundleIdentifier": "com.cyjoon68.idwallet",
       "supportsTablet": true
     },
     "android": {
@@ -16,6 +18,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "package": "com.cyjoon68.idwallet",
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -23,6 +26,18 @@
     },
     "experiments": {
       "reactCompiler": true
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/61309747-55e7-4264-aea0-a52df1d17987"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "61309747-55e7-4264-aea0-a52df1d17987"
+      }
+    },
+    "owner": "cyjoon"
   }
 }
