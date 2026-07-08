@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
-import { WalletCredential, walletApi } from "./src/features/wallet";
+import { summarizeCredentials, WalletCredential, walletApi } from "./src/features/wallet";
 
 const fallbackCredentials: WalletCredential[] = [
   {
@@ -24,6 +24,7 @@ const fallbackCredentials: WalletCredential[] = [
 
 const App = () => {
   const [credentials, setCredentials] = useState<WalletCredential[]>(fallbackCredentials);
+  const summary = summarizeCredentials(credentials);
 
   useEffect(() => {
     walletApi.credentials().then(setCredentials).catch(() => setCredentials(fallbackCredentials));
@@ -42,11 +43,11 @@ const App = () => {
         <View style={styles.metricRow}>
           <View style={styles.metricCard}>
             <Text style={styles.metricLabel}>Credentials</Text>
-            <Text style={styles.metricValue}>{credentials.length}</Text>
+            <Text style={styles.metricValue}>{summary.total}</Text>
           </View>
           <View style={styles.metricCard}>
-            <Text style={styles.metricLabel}>E2E</Text>
-            <Text style={styles.metricValue}>Maestro</Text>
+            <Text style={styles.metricLabel}>Active</Text>
+            <Text style={styles.metricValue}>{summary.active}</Text>
           </View>
         </View>
 
