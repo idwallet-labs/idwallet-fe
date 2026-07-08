@@ -4,6 +4,7 @@ export type WalletCredential = {
   id: string;
   type: string;
   issuerName: string;
+  payloadHash: string;
   status: "ACTIVE" | "REVOKED" | "EXPIRED";
   expiresAt: string;
 };

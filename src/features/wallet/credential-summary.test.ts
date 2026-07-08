@@ -7,6 +7,7 @@ const credential = (status: WalletCredential["status"]): WalletCredential => ({
   expiresAt: "2027-12-31",
   id: `credential-${status}`,
   issuerName: "IDWallet Demo Issuer",
+  payloadHash: `hash-${status}`,
   status,
   type: "교육 수료 증명",
 });
