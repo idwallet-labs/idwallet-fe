@@ -1,7 +1,8 @@
 FROM node:22-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+RUN corepack enable
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
 EXPOSE 8081
-CMD ["npm", "run", "web"]
+CMD ["pnpm", "web"]
