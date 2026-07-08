@@ -1,20 +1,20 @@
 # idwallet-fe
 
-Expo mobile wallet app for IDWallet credential submission.
+IDWallet의 자격증명 제출용 Expo 모바일 앱입니다.
 
-## Stack
+## 기술 스택
 
 - Expo
-- React latest + React Compiler
+- React 최신 버전 + React Compiler
 - TypeScript
 - ky API client
 - react-native-unistyles
 - GitHub Actions CI
 
-## Features
+## 주요 기능
 
-- Credential list.
-- Credential detail summary.
-- Submission request approval.
-- QR/deep link entry flow.
-- Maestro submission flow check.
+- 자격증명 목록
+- 자격증명 상세 요약
+- 제출 요청 승인
+- QR/deep link 진입 흐름
+- Maestro 제출 flow 검사
