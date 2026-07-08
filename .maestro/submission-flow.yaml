@@ -1,0 +1,6 @@
+appId: com.cyjoon68.idwallet
+---
+- launchApp
+- assertVisible: "IDWallet selective submission"
+- assertVisible: "교육 수료 증명"
+- assertVisible: "재직 증명"
