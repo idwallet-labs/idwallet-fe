@@ -1,0 +1,26 @@
+{
+  "name": "idwallet-fe",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "babel-plugin-react-compiler": "^19.0.0-beta-af1b7da-20250417",
+    "expo": "~57.0.4",
+    "expo-status-bar": "~57.0.0",
+    "ky": "^2.0.2",
+    "react": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-unistyles": "^3.2.5"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit"
+  },
+  "private": true
+}
