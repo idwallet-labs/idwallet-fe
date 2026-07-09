@@ -2,16 +2,19 @@
   "name": "idwallet-fe",
   "version": "1.0.0",
   "packageManager": "pnpm@11.0.4",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
     "@sentry/react-native": "^8.17.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "expo": "~57.0.4",
+    "expo-router": "^57.0.4",
     "expo-status-bar": "~57.0.0",
     "expo-updates": "~57.0.6",
     "ky": "^2.0.2",
     "react": "19.2.3",
     "react-native": "0.86.0",
+    "react-native-nitro-modules": "0.35.7",
+    "react-native-safe-area-context": "~5.7.0",
     "react-native-unistyles": "^3.2.5"
   },
   "devDependencies": {
@@ -20,9 +23,9 @@
     "vitest": "^4.1.10"
   },
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "EXPO_ROUTER_APP_ROOT=src/app expo start",
+    "android": "EXPO_ROUTER_APP_ROOT=src/app expo run:android",
+    "ios": "EXPO_ROUTER_APP_ROOT=src/app expo run:ios",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
