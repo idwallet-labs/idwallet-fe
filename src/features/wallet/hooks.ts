@@ -17,6 +17,7 @@ export type WalletViewState = {
   approveSubmission: () => Promise<void>;
   createSubmission: () => Promise<void>;
   loadCredentials: () => Promise<void>;
+  receiveCredential: () => Promise<void>;
 };
 
 export const useWalletSubmission = (): WalletViewState => {
@@ -66,6 +67,24 @@ export const useWalletSubmission = (): WalletViewState => {
     }
   };
 
+  const receiveCredential = async () => {
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      await walletApi.receiveCredential({
+        issuerName: "BDGEN Academy Issuer",
+        type: "교육 수료 증명",
+      });
+      await loadCredentials();
+      setSubmissionMessage("발급기관에서 교육 수료 증명을 지갑에 추가했습니다");
+    } catch (error) {
+      setErrorMessage(await apiErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const approveSubmission = async () => {
     if (!submission) {
       setSubmissionMessage("먼저 제출 요청을 생성하세요");
@@ -100,6 +119,7 @@ export const useWalletSubmission = (): WalletViewState => {
     isLoading,
     isSubmitting,
     loadCredentials,
+    receiveCredential,
     selectedCredential,
     submission,
     submissionMessage,

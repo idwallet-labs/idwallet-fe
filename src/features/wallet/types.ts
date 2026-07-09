@@ -7,6 +7,11 @@ export type WalletCredential = {
   expiresAt: string;
 };
 
+export type ReceiveCredentialInput = {
+  type: string;
+  issuerName: string;
+};
+
 export type SubmissionRequest = {
   id: string;
   requestedTypes: string[];

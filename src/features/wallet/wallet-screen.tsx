@@ -7,18 +7,25 @@ import { useWalletSubmission } from "./hooks";
 
 const requestedType = "교육 수료 증명";
 
+const credentialStatusLabel = {
+  ACTIVE: "제출 가능",
+  EXPIRED: "만료됨",
+  REVOKED: "폐기됨",
+};
+
 export const WalletScreen = () => {
   const wallet = useWalletSubmission();
   const submitDisabled = wallet.isSubmitting || !wallet.submission || !wallet.selectedCredential;
+  const hasSubmissionRequest = Boolean(wallet.submission);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <ScrollView contentContainerStyle={styles.content}>
         <Text accessibilityRole="header" style={styles.eyebrow}>DID 모바일 지갑</Text>
-        <Text style={styles.title}>증명 선택 제출</Text>
+        <Text style={styles.title}>모바일 증명 제출</Text>
         <Text style={styles.description}>
-          검증자가 요청한 증명 조건을 확인하고, 지갑 안의 활성 증명만 선택해 제출한다.
+          QR 또는 deep link로 제출 요청을 받은 뒤, 발급기관에서 받은 활성 증명만 선택해 검증자에게 제출한다.
         </Text>
 
         <View style={styles.metricRow}>
@@ -34,47 +41,93 @@ export const WalletScreen = () => {
 
         {wallet.errorMessage ? (
           <View accessibilityRole="alert" style={styles.errorCard}>
-            <Text style={styles.errorTitle}>API 연결 오류</Text>
+            <Text style={styles.errorTitle}>처리 오류</Text>
             <Text style={styles.errorText}>{wallet.errorMessage}</Text>
-            <Pressable accessibilityRole="button" onPress={wallet.loadCredentials} style={styles.secondaryButton}>
+            <Pressable
+              accessibilityLabel="증명 다시 불러오기"
+              accessibilityRole="button"
+              onPress={wallet.loadCredentials}
+              style={styles.secondaryButton}
+            >
               <Text style={styles.secondaryButtonText}>다시 불러오기</Text>
             </Pressable>
           </View>
         ) : null}
 
-        <View accessibilityLabel="Submission session" style={styles.submissionCard}>
-          <Text style={styles.sectionLabel}>제출 요청</Text>
-          <Text style={styles.cardTitle}>검증자가 요구한 증명</Text>
+        <View accessibilityLabel="Submission request intake" style={styles.submissionCard}>
+          <Text style={styles.sectionLabel}>제출 요청 수신</Text>
+          <Text style={styles.cardTitle}>QR / deep link 요청</Text>
           <Text style={styles.cardMeta}>
             상태: {wallet.submission ? `${wallet.submission.id} · ${wallet.submission.status}` : wallet.submissionMessage}
           </Text>
           <Text style={styles.cardMeta}>요청 항목: {wallet.submission?.requestedTypes.join(", ") ?? requestedType}</Text>
-          <Text style={styles.cardMeta}>
-            선택 증명: {wallet.selectedCredential ? `${wallet.selectedCredential.type} (${wallet.selectedCredential.id})` : "선택 가능한 증명 없음"}
-          </Text>
           <View style={styles.actionRow}>
             <Pressable
+              accessibilityLabel="QR 제출 요청 받기"
               accessibilityRole="button"
               accessibilityState={{ disabled: wallet.isSubmitting }}
               disabled={wallet.isSubmitting}
               onPress={wallet.createSubmission}
               style={wallet.isSubmitting ? styles.disabledButton : styles.primaryButton}
             >
-              <Text style={styles.primaryButtonText}>{wallet.isSubmitting ? "처리 중" : "요청 생성"}</Text>
+              <Text style={styles.primaryButtonText}>{wallet.isSubmitting ? "처리 중" : "QR 요청 받기"}</Text>
             </Pressable>
             <Pressable
+              accessibilityLabel="Deep link 제출 요청 받기"
               accessibilityRole="button"
-              accessibilityState={{ disabled: submitDisabled }}
-              disabled={submitDisabled}
-              onPress={wallet.approveSubmission}
-              style={submitDisabled ? styles.disabledButton : styles.secondaryButton}
+              accessibilityState={{ disabled: wallet.isSubmitting }}
+              disabled={wallet.isSubmitting}
+              onPress={wallet.createSubmission}
+              style={wallet.isSubmitting ? styles.disabledButton : styles.secondaryButton}
             >
-              <Text style={submitDisabled ? styles.disabledButtonText : styles.secondaryButtonText}>선택 제출</Text>
+              <Text style={wallet.isSubmitting ? styles.disabledButtonText : styles.secondaryButtonText}>Deep link</Text>
             </Pressable>
           </View>
+        </View>
+
+        <View accessibilityLabel="Credential receive flow" style={styles.card}>
+          <Text style={styles.sectionLabel}>증명 추가</Text>
+          <Text style={styles.cardTitle}>발급기관에서 증명 받기</Text>
+          <Text style={styles.cardMeta}>
+            지갑은 빈 상태에서 시작하며, 사용자가 발급기관의 증명을 받은 뒤 제출 가능 목록에 추가된다.
+          </Text>
+          <Pressable
+            accessibilityLabel="교육 수료 증명 발급받기"
+            accessibilityRole="button"
+            accessibilityState={{ disabled: wallet.isSubmitting }}
+            disabled={wallet.isSubmitting}
+            onPress={wallet.receiveCredential}
+            style={wallet.isSubmitting ? styles.disabledButton : styles.secondaryButton}
+          >
+            <Text style={wallet.isSubmitting ? styles.disabledButtonText : styles.secondaryButtonText}>교육 수료 증명 받기</Text>
+          </Pressable>
+        </View>
+
+        <View accessibilityLabel="Selective disclosure submission" style={styles.submissionCard}>
+          <Text style={styles.sectionLabel}>선택 제출</Text>
+          <Text style={styles.cardTitle}>요청 조건에 맞는 증명 확인</Text>
+          <Text style={styles.cardMeta}>
+            선택 증명: {wallet.selectedCredential ? `${wallet.selectedCredential.type} (${wallet.selectedCredential.id})` : "제출 가능한 증명 없음"}
+          </Text>
+          <Pressable
+            accessibilityLabel="선택한 증명 제출"
+            accessibilityRole="button"
+            accessibilityState={{ disabled: submitDisabled }}
+            disabled={submitDisabled}
+            onPress={wallet.approveSubmission}
+            style={submitDisabled ? styles.disabledButton : styles.secondaryButton}
+          >
+            <Text style={submitDisabled ? styles.disabledButtonText : styles.secondaryButtonText}>선택 제출</Text>
+          </Pressable>
+          {!hasSubmissionRequest ? (
+            <Text accessibilityRole="alert" style={styles.warningText}>먼저 QR 또는 deep link 제출 요청을 받아야 합니다.</Text>
+          ) : null}
+          {hasSubmissionRequest && !wallet.selectedCredential ? (
+            <Text accessibilityRole="alert" style={styles.warningText}>요청 조건에 맞는 활성 증명이 없어서 제출할 수 없습니다.</Text>
+          ) : null}
           {wallet.submissionResponse ? (
             <Text style={styles.resultText}>
-              제출 결과: {wallet.submissionResponse.result} · {wallet.submissionResponse.credentialId}
+              제출 완료: {wallet.submissionResponse.result} · {wallet.submissionResponse.credentialId}
             </Text>
           ) : null}
         </View>
@@ -82,7 +135,7 @@ export const WalletScreen = () => {
         <Text style={styles.sectionLabel}>보유 증명</Text>
         {wallet.isLoading ? <Text style={styles.cardMeta}>증명을 불러오는 중입니다</Text> : null}
         {!wallet.isLoading && wallet.credentials.length === 0 ? (
-          <Text style={styles.cardMeta}>보유 증명이 없습니다</Text>
+          <Text style={styles.cardMeta}>아직 보유 증명이 없습니다. 발급기관에서 증명을 받은 뒤 제출할 수 있습니다.</Text>
         ) : null}
         {wallet.credentials.map((credential) => (
           <View accessibilityLabel={`${credential.type} ${credential.status}`} key={credential.id} style={styles.card}>
@@ -91,7 +144,7 @@ export const WalletScreen = () => {
             <Text style={styles.cardMeta}>증명 ID: {credential.id}</Text>
             <Text style={styles.cardMeta}>무결성 해시: {credential.payloadHash}</Text>
             <Text style={credential.status === "ACTIVE" ? styles.activeBadge : styles.inactiveBadge}>
-              {credential.status} · 만료 {credential.expiresAt}
+              {credentialStatusLabel[credential.status]} · 만료 {credential.expiresAt}
             </Text>
           </View>
         ))}
@@ -102,7 +155,9 @@ export const WalletScreen = () => {
 
 const styles = StyleSheet.create({
   actionRow: {
+    alignItems: "center",
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
   },
   activeBadge: {
@@ -146,8 +201,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   disabledButton: {
+    alignItems: "center",
     backgroundColor: "#d0d5dd",
     borderRadius: 8,
+    minHeight: 44,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
@@ -212,8 +269,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   primaryButton: {
+    alignItems: "center",
     backgroundColor: "#101827",
     borderRadius: 8,
+    minHeight: 44,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
@@ -228,9 +287,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   secondaryButton: {
+    alignItems: "center",
     borderColor: "#101827",
     borderRadius: 8,
     borderWidth: 1,
+    minHeight: 44,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
@@ -256,5 +317,10 @@ const styles = StyleSheet.create({
     color: "#101827",
     fontSize: 34,
     fontWeight: "800",
+  },
+  warningText: {
+    color: "#9a3412",
+    fontSize: 14,
+    fontWeight: "700",
   },
 });

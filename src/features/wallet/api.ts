@@ -1,6 +1,12 @@
 import ky from "ky";
 
-import { SubmissionRequest, SubmissionResponse, WalletCredential, WalletErrorResponse } from "./types";
+import {
+  ReceiveCredentialInput,
+  SubmissionRequest,
+  SubmissionResponse,
+  WalletCredential,
+  WalletErrorResponse,
+} from "./types";
 
 const api = ky.create({
   prefix: process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080/api",
@@ -19,6 +25,8 @@ export const apiErrorMessage = async (error: unknown) => {
 
 export const walletApi = {
   credentials: () => api.get("wallet/credentials").json<WalletCredential[]>(),
+  receiveCredential: (input: ReceiveCredentialInput) =>
+    api.post("wallet/credentials", { json: input }).json<WalletCredential>(),
   createSubmission: (requestedTypes: string[]) =>
     api.post("submission-requests", { json: { requestedTypes } }).json<SubmissionRequest>(),
   submission: (id: string) => api.get(`submission-requests/${id}`).json<SubmissionRequest>(),
